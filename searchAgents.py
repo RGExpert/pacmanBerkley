@@ -117,10 +117,10 @@ class SearchAgent(Agent):
         starttime = time.time()
         problem = self.searchType(state) # Makes a new search problem
         self.actions  = self.searchFunction(problem) # Find a path
-        totalCost = problem.getCostOfActions(self.actions)
         if self.actions == None:
             self.actions = []
  
+        totalCost = problem.getCostOfActions(self.actions)
         print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
         if '_expanded' in dir(problem): print('Search nodes expanded: %d' % problem._expanded)
 
@@ -232,14 +232,13 @@ class PositionSearchProblem(search.SearchProblem):
         include an illegal move, return 999999.
         """
         if actions == None: return 999999
-        return len(actions)
         x,y= self.getStartState()
         cost = 0
         for action in actions:
             # Check figure out the next state and see whether its' legal
             dx, dy = Actions.directionToVector(action)
             x, y = int(x + dx), int(y + dy)
-            if self.walls[x][y]: return 999999
+            #if self.walls[x][y]: return 999999
             cost += self.costFn((x,y))
         return cost
 
@@ -475,6 +474,7 @@ class FoodSearchProblem:
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
         self.heuristicInfo = {} # A dictionary for the heuristic to store information
+        self.portals=startingGameState.getPortals()
         clusters = find_clusters(startingGameState.getFood().asList())
         self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood(),clusters)
 
@@ -504,13 +504,20 @@ class FoodSearchProblem:
                 else:
                     new_tuple=clusters
                 nextFood[nextx][nexty]=False
-                successors.append( ( ((nextx, nexty), nextFood,new_tuple), direction, 1) )
+
+                if self.portals[nextx][nexty]!=0:
+                    for portalCoord,portalType in self.portals.asListNotNull():
+                        if portalCoord != (nextx,nexty) and portalType == self.portals[nextx][nexty]:
+                            successors.append( ( (portalCoord, nextFood,new_tuple), direction, 1) )
+                else:                 
+                    successors.append( ( ((nextx, nexty), nextFood,new_tuple), direction, 1) )
         return successors
 
     def getCostOfActions(self, actions):
         """Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999"""
         x,y= self.getStartState()[0]
+        return len(actions)
         cost = 0
         for action in actions:
             # figure out the next state and see whether it's legal
@@ -524,6 +531,7 @@ class FoodSearchProblem:
 class AStarFoodSearchAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
+        
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
@@ -681,7 +689,6 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         "Stores information from the gameState.  You don't need to change this."
         # Store the food for later reference
         self.food = gameState.getFood()
-
         # Store info for the PositionSearchProblem (no need to change this)
         self.walls = gameState.getWalls()
         self.startState = gameState.getPacmanPosition()

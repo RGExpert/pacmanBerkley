@@ -166,7 +166,7 @@ def uniformCostSearch(problem: SearchProblem):
             for state, direction, cost in problem.getSuccessors(curr_state):
                 if state not in visited:
                     new_path = curr_path + [direction]
-                    new_cost = curr_cost + problem.getCostOfActions(new_path)
+                    new_cost = problem.getCostOfActions(new_path)
                     states_directions.push((state, new_path, new_cost), new_cost)
 
     return []
@@ -199,7 +199,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
             for state, direction, cost in problem.getSuccessors(curr_state):
                 if state not in visited:
                     new_path = curr_path + [direction]
-                    new_cost = curr_cost + problem.getCostOfActions(new_path) + heuristic(state,problem)
+                    new_cost = problem.getCostOfActions(new_path) + heuristic(state,problem)
                     states_directions.push((state, new_path, new_cost), new_cost)
 
     return []
