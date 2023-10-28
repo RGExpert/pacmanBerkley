@@ -116,8 +116,8 @@ class SearchAgent(Agent):
         if self.searchFunction == None: raise Exception("No search function provided for SearchAgent")
         starttime = time.time()
         problem = self.searchType(state) # Makes a new search problem
-        self.actions  = self.searchFunction(problem)[0] # Find a path
-        totalCost = self.searchFunction(problem)[1]
+        self.actions  = self.searchFunction(problem) # Find a path
+        totalCost = problem.getCostOfActions(self.actions)
         if self.actions == None:
             self.actions = []
  
@@ -232,6 +232,7 @@ class PositionSearchProblem(search.SearchProblem):
         include an illegal move, return 999999.
         """
         if actions == None: return 999999
+        return len(actions)
         x,y= self.getStartState()
         cost = 0
         for action in actions:
@@ -347,7 +348,6 @@ class CornersProblem(search.SearchProblem):
                     notVisited = tuple(item for item in notVisited if item != element_to_remove)
                 
                 if self.portals[nextx][nexty]!=0:
-                    print("Entered")
                     for portalCoord,portalType in self.portals.asListNotNull():
                         if portalCoord != nextCoordonate and portalType == self.portals[nextx][nexty]:
                             successors.append(((portalCoord,notVisited),action,1))
@@ -363,6 +363,7 @@ class CornersProblem(search.SearchProblem):
         include an illegal move, return 999999.  This is implemented for you.
         """
         if actions == None: return 999999
+        return len(actions)
         x,y= self.startingPosition
         for action in actions:
             dx, dy = Actions.directionToVector(action)
