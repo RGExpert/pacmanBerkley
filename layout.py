@@ -122,10 +122,10 @@ class Layout:
         if layoutChar == '%':
             self.walls[x][y] = True
         elif layoutChar == '.':
-            self.food[x][y] = True
-        elif layoutChar == 'B':
-            self.portals[x][y] = 1
-        elif layoutChar == 'R':
+            self.food[x][y] = True      # Added a new Layout for Red and Blue portals. 
+        elif layoutChar == 'B':         # 0 -> no portal
+            self.portals[x][y] = 1      # 1 -> Blue portal
+        elif layoutChar == 'R':         # 2 -> Red portal
             self.portals[x][y] = 2
         elif layoutChar == 'o':
             self.capsules.append((x, y))
