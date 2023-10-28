@@ -345,8 +345,14 @@ class CornersProblem(search.SearchProblem):
                 if nextCoordonate in self.corners and nextCoordonate in notVisited:
                     element_to_remove = nextCoordonate
                     notVisited = tuple(item for item in notVisited if item != element_to_remove)
-
-                successors.append(((nextCoordonate,notVisited),action,1))
+                
+                if self.portals[nextx][nexty]!=0:
+                    print("Entered")
+                    for portalCoord,portalType in self.portals.asListNotNull():
+                        if portalCoord != nextCoordonate and portalType == self.portals[nextx][nexty]:
+                            successors.append(((portalCoord,notVisited),action,1))
+                else:                    
+                    successors.append(((nextCoordonate,notVisited),action,1))
             
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -424,6 +430,8 @@ class AStarCornersAgent(SearchAgent):
     def __init__(self):
         self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
         self.searchType = CornersProblem
+
+
 
 def find_clusters(foodList):
     clusters = []

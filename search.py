@@ -99,17 +99,17 @@ def depthFirstSearch(problem: SearchProblem):
         visited.add(curr_state)
         
         if not dir_taken.isEmpty():
-            curr_path=dir_taken.pop()
+            curr_path,curr_cost=dir_taken.pop()
 
         if(problem.isGoalState(curr_state)):
-           return curr_path
+           return (curr_path,curr_cost)
 
         for succesor in problem.getSuccessors(curr_state):
             if succesor[0] not in visited:
                 states.push(succesor[0])
                 new_path = curr_path[:]
                 new_path.append(succesor[1])  
-                dir_taken.push(new_path)  
+                dir_taken.push((new_path,curr_cost+1))  
     return None
 
     util.raiseNotDefined()
@@ -130,10 +130,10 @@ def breadthFirstSearch(problem: SearchProblem):
         curr_state=states.pop()
         
         if not dir_taken.isEmpty():
-            curr_path=dir_taken.pop()
+            curr_path,curr_cost=dir_taken.pop()
 
         if(problem.isGoalState(curr_state)):
-           return curr_path
+           return (curr_path,curr_cost)
 
         for succesor in problem.getSuccessors(curr_state):
             if succesor[0] not in visited:
@@ -142,7 +142,7 @@ def breadthFirstSearch(problem: SearchProblem):
 
                 new_path = curr_path[:]
                 new_path.append(succesor[1])  
-                dir_taken.push(new_path)  
+                dir_taken.push((new_path,curr_cost))  
     return None
 
     util.raiseNotDefined()
@@ -192,7 +192,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
         curr_state, curr_path, curr_cost = states_directions.pop()
         
         if problem.isGoalState(curr_state):
-            return curr_path
+            return (curr_path,curr_cost)
         
         if curr_state not in visited:
             visited.add(curr_state)
