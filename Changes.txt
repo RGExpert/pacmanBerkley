@@ -1,0 +1,34 @@
+STUFF I CHANGED TO IMPLEMENT PORTALS 
+
+Graphics:
+Added a portal grid to the layout: 0 - no portal	
+								   1 - blue portal
+								   2 - red portal
+								   
+								   
+Added a drawPortal method in graphics display
+
+
+Game logic:
+
+Changed the getSuccessor() (searchAgents.py) function so that it takes into account the portals 
+
+Changed the generateSuccessor() in the Configuration class(game.py) function so that 
+it updates the configuration to an exact position if a portal was used
+
+Changed the applyAction in game.py So it updates the configuration of the pacman 
+the the position of the next portal
+
+
+
+Bug fixes:
+
+Changed the way the cost is computed, it needs to be independent of the action taken,
+previosly the cost was computed betwween two neighbooring locations
+
+Changed registerInitalState so the correct path is shown
+
+Maps: 
+added mediumMazePort  mediumMaze + portals
+added mediumCornersPort mediumCorners + portals
+added trickySearchPort trickySearch + portals
