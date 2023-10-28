@@ -212,18 +212,7 @@ class PositionSearchProblem(search.SearchProblem):
                 if self.portals[nextx][nexty]!=0:
                     for portalCoord,portalType in self.portals.asListNotNull():
                         if portalCoord != nextState and portalType == self.portals[nextx][nexty]:
-                            for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-                                px, py=portalCoord
-                                dx, dy = Actions.directionToVector(action)
-                                portalx, portaly = int(px + dx), int(py + dy)
-                                if not self.walls[portalx][portaly]:
-                                    nxtState=(portalx,portaly)
-                                    agent_position = (x, y)  # Set the position where you want your agent to be
-                                    agent_direction = Directions.NORTH  # Set the direction your agent is facing
-                                    agent_state = AgentState(Configuration(agent_position, agent_direction), True)  # Create an AgentState for your agent
-                                    self.currentGamestate.data.agentStates[0] = agent_state  # Update the GameState's agent state
-                                    
-                                    successors.append((nxtState,action,1))
+                            successors.append((portalCoord,action,1))
                                     
                 else:
                     successors.append( ( nextState, action, cost) )
