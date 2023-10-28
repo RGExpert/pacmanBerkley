@@ -116,10 +116,11 @@ class SearchAgent(Agent):
         if self.searchFunction == None: raise Exception("No search function provided for SearchAgent")
         starttime = time.time()
         problem = self.searchType(state) # Makes a new search problem
-        self.actions  = self.searchFunction(problem) # Find a path
+        self.actions  = self.searchFunction(problem)[0] # Find a path
+        totalCost = self.searchFunction(problem)[1]
         if self.actions == None:
             self.actions = []
-        totalCost = problem.getCostOfActions(self.actions)
+ 
         print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
         if '_expanded' in dir(problem): print('Search nodes expanded: %d' % problem._expanded)
 
@@ -207,7 +208,6 @@ class PositionSearchProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
-                cost = self.costFn(nextState)
                                 
                 if self.portals[nextx][nexty]!=0:
                     for portalCoord,portalType in self.portals.asListNotNull():
@@ -215,8 +215,7 @@ class PositionSearchProblem(search.SearchProblem):
                             successors.append((portalCoord,action,1))
                                     
                 else:
-                    successors.append( ( nextState, action, cost) )
-
+                    successors.append( ( nextState, action, 1) )
 
 
         # Bookkeeping for display purposes
