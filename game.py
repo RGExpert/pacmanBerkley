@@ -102,7 +102,7 @@ class Configuration:
     def __str__(self):
         return "(x,y)="+str(self.pos)+", "+str(self.direction)
 
-    def generateSuccessor(self, vector):
+    def generateSuccessor(self, vector,PortalUsed=False):
         """
         Generates a new configuration reached by translating the current
         configuration by the action vector.  This is a low-level call and does
@@ -110,12 +110,16 @@ class Configuration:
 
         Actions are movement vectors.
         """
-        x, y= self.pos
-        dx, dy = vector
-        direction = Actions.vectorToDirection(vector)
-        if direction == Directions.STOP:
-            direction = self.direction # There is no stop direction
-        return Configuration((x + dx, y+dy), direction)
+        if PortalUsed == False:
+            x, y= self.pos
+            dx, dy = vector
+            direction = Actions.vectorToDirection(vector)
+            if direction == Directions.STOP:
+                direction = self.direction # There is no stop direction
+            return Configuration((x + dx, y+dy), direction)
+        else:
+            direction = Directions.WEST
+            return Configuration(vector,direction)
 
 class AgentState:
     """

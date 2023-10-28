@@ -38,6 +38,8 @@ from typing import List, Tuple, Any
 from game import Directions
 from game import Agent
 from game import Actions
+from game import AgentState
+from game import Configuration
 import util
 import time
 import search
@@ -158,10 +160,12 @@ class PositionSearchProblem(search.SearchProblem):
         """
         self.walls = gameState.getWalls()
         self.startState = gameState.getPacmanPosition()
+        self.currentGamestate=gameState
         if start != None: self.startState = start
         self.goal = goal
         self.costFn = costFn
         self.visualize = visualize
+        self.portals=gameState.getPortals()
         if warn and (gameState.getNumFood() != 1 or not gameState.hasFood(*goal)):
             print('Warning: this does not look like a regular search maze')
 
@@ -204,7 +208,27 @@ class PositionSearchProblem(search.SearchProblem):
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
                 cost = self.costFn(nextState)
-                successors.append( ( nextState, action, cost) )
+                                
+                if self.portals[nextx][nexty]!=0:
+                    for portalCoord,portalType in self.portals.asListNotNull():
+                        if portalCoord != nextState and portalType == self.portals[nextx][nexty]:
+                            for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+                                px, py=portalCoord
+                                dx, dy = Actions.directionToVector(action)
+                                portalx, portaly = int(px + dx), int(py + dy)
+                                if not self.walls[portalx][portaly]:
+                                    nxtState=(portalx,portaly)
+                                    agent_position = (x, y)  # Set the position where you want your agent to be
+                                    agent_direction = Directions.NORTH  # Set the direction your agent is facing
+                                    agent_state = AgentState(Configuration(agent_position, agent_direction), True)  # Create an AgentState for your agent
+                                    self.currentGamestate.data.agentStates[0] = agent_state  # Update the GameState's agent state
+                                    
+                                    successors.append((nxtState,action,1))
+                                    
+                else:
+                    successors.append( ( nextState, action, cost) )
+
+
 
         # Bookkeeping for display purposes
         self._expanded += 1 # DO NOT CHANGE
@@ -285,6 +309,7 @@ class CornersProblem(search.SearchProblem):
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
+        self.portals=startingGameState.getPortals()
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
@@ -317,6 +342,8 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
+
+
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             "*** YOUR CODE HERE ***"
@@ -330,6 +357,7 @@ class CornersProblem(search.SearchProblem):
                 if nextCoordonate in self.corners and nextCoordonate in notVisited:
                     element_to_remove = nextCoordonate
                     notVisited = tuple(item for item in notVisited if item != element_to_remove)
+
                 successors.append(((nextCoordonate,notVisited),action,1))
             
         self._expanded += 1 # DO NOT CHANGE

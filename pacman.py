@@ -176,6 +176,9 @@ class GameState:
     def getNumFood( self ):
         return self.data.food.count()
 
+    def getPortals(self):
+        return self.data.layout.portals
+    
     def getFood(self):
         """
         Returns a Grid of boolean food indicator variables.
@@ -343,8 +346,17 @@ class PacmanRules:
             raise Exception("Illegal action " + str(action))
 
         pacmanState = state.data.agentStates[0]
-
+        (pacmanx, pacmany)=pacmanState.getPosition()
+        type =state.data.layout.portals[pacmanx][pacmany]
         # Update Configuration
+        if type!=0:
+            twinPortalPosition=None
+            for portal,types in state.data.layout.portals.asListNotNull():
+                if types == type and portal!=(pacmanx, pacmany):
+                    twinPortalPosition=portal
+            print(twinPortalPosition)
+            pacmanState.configuration=pacmanState.configuration.generateSuccessor(twinPortalPosition,PortalUsed=True)
+    
         vector = Actions.directionToVector( action, PacmanRules.PACMAN_SPEED )
         pacmanState.configuration = pacmanState.configuration.generateSuccessor( vector )
 
