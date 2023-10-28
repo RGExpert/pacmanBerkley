@@ -30,6 +30,7 @@ class Layout:
         self.height= len(layoutText)
         self.walls = Grid(self.width, self.height, False)
         self.food = Grid(self.width, self.height, False)
+        self.portals = Grid(self.width, self.height, 0)
         self.capsules = []
         self.agentPositions = []
         self.numGhosts = 0
@@ -101,10 +102,12 @@ class Layout:
         represents a different type of object.
          % - Wall
          . - Food
-         
+
          o - Capsule
          G - Ghost
          P - Pacman
+         B - Warp portal blue
+         R - Warp portal red
         Other characters are ignored.
         """
         maxY = self.height - 1
@@ -120,6 +123,10 @@ class Layout:
             self.walls[x][y] = True
         elif layoutChar == '.':
             self.food[x][y] = True
+        elif layoutChar == 'B':
+            self.portals[x][y] = 1
+        elif layoutChar == 'R':
+            self.portals[x][y] = 2
         elif layoutChar == 'o':
             self.capsules.append((x, y))
         elif layoutChar == 'P':
@@ -130,6 +137,7 @@ class Layout:
         elif layoutChar in  ['1', '2', '3', '4']:
             self.agentPositions.append( (int(layoutChar), (x,y)))
             self.numGhosts += 1
+            
 def getLayout(name, back = 2):
     if name.endswith('.lay'):
         layout = tryToLoad('layouts/' + name)

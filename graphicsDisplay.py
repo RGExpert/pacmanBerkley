@@ -55,6 +55,7 @@ GHOST_SHAPE = [
     (-0.5,  0.3 ),
     (-0.25, 0.75 )
   ]
+
 GHOST_SIZE = 0.65
 SCARED_COLOR = formatColor(1,1,1)
 
@@ -78,6 +79,10 @@ CAPSULE_SIZE = 0.25
 
 # Drawing walls
 WALL_RADIUS = 0.15
+
+# Drawing portals 
+PORTAL_COLORS = [formatColor(0,0,1),formatColor(1,0,0),formatColor(0,0.7,0.9),formatColor(0.8,0.7,0)]
+PORTAL_SIZE=0.45
 
 class InfoPane:
     def __init__(self, layout, gridSize):
@@ -137,6 +142,9 @@ class InfoPane:
         pass
 
     def drawPacman(self):
+        pass
+
+    def drawPortal(self,type):
         pass
 
     def drawWarning(self):
@@ -204,8 +212,10 @@ class PacmanGraphics:
     def drawStaticObjects(self, state):
         layout = self.layout
         self.drawWalls(layout.walls)
+        self.drawPortal(layout.portals)
         self.food = self.drawFood(layout.food)
         self.capsules = self.drawCapsules(layout.capsules)
+        
         refresh()
 
     def drawAgentObjects(self, state):
@@ -552,6 +562,24 @@ class PacmanGraphics:
                               width = 1)
             capsuleImages[capsule] = dot
         return capsuleImages
+    
+    def drawPortal(self, portals):
+        portalImages={}
+        for portalCoord,type in portals.asListNotNull():
+            (screen_x, screen_y) = self.to_screen(portalCoord)
+            dot = circle( (screen_x, screen_y),
+                              PORTAL_SIZE * self.gridSize,
+                              outlineColor = PORTAL_COLORS[type-1],
+                              fillColor = PORTAL_COLORS[type-1],
+                              width = 1)
+            sdot = circle( (screen_x, screen_y),
+                              PORTAL_SIZE* 0.65 * self.gridSize,
+                              outlineColor = PORTAL_COLORS[type+1],
+                              fillColor = PORTAL_COLORS[type+1],
+                              width = 1)
+            portalImages[portalCoord]=dot
+        return portalImages
+            
 
     def removeFood(self, cell, foodImages ):
         x, y = cell

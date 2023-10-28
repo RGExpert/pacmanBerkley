@@ -225,6 +225,14 @@ class Grid:
             for y in range(self.height):
                 if self[x][y] == key: list.append( (x,y) )
         return list
+    
+    #Helper function added by me
+    def asListNotNull(self):
+        list = []
+        for x in range(self.width):
+            for y in range(self.height):
+                if self[x][y] != 0: list.append( ((x,y),self[x][y]) )
+        return list
 
     def packBits(self):
         """

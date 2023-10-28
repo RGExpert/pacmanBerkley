@@ -21,7 +21,7 @@ Written by the CS 188 Staff
                  | |      
                  |_|      
 
-Modifying or tampering with this file is a violation of course policy.
+Modifying or tampering with this file is a violation of course policy           (<---Nerd).
 If you're having trouble running the autograder, please contact the staff.
 ==============================================================================
 """
