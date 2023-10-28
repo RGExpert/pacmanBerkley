@@ -166,7 +166,11 @@ class PositionSearchProblem(search.SearchProblem):
         self.goal = goal
         self.costFn = costFn
         self.visualize = visualize
-        self.portals=gameState.getPortals()
+        try:
+            self.portals = gameState.getPortals()
+        except:
+            pass
+
         if warn and (gameState.getNumFood() != 1 or not gameState.hasFood(*goal)):
             print('Warning: this does not look like a regular search maze')
 
@@ -209,12 +213,15 @@ class PositionSearchProblem(search.SearchProblem):
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
                                 
-                if self.portals[nextx][nexty]!=0:
-                    for portalCoord,portalType in self.portals.asListNotNull():
-                        if portalCoord != nextState and portalType == self.portals[nextx][nexty]:
-                            successors.append((portalCoord,action,1))
-                                    
-                else:
+                try:
+                    if self.portals[nextx][nexty]!=0:
+                        for portalCoord,portalType in self.portals.asListNotNull():
+                            if portalCoord != nextState and portalType == self.portals[nextx][nexty]:
+                                successors.append((portalCoord,action,1))
+                                        
+                    else:
+                        successors.append( ( nextState, action, 1) )
+                except:
                     successors.append( ( nextState, action, 1) )
 
 
@@ -668,7 +675,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -703,7 +710,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return state in self.food.asList()
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """

@@ -85,34 +85,25 @@ def depthFirstSearch(problem: SearchProblem):
     """
     "*** YOUR CODE HERE ***"
 
-    visited=set()
+
+    frontier = util.Stack()
+    visited = set()
+    actions = []
+    frontier.push( (problem.getStartState(), actions) )
+    while not frontier.isEmpty():
+        currentNode, actions = frontier.pop()
+
+        if problem.isGoalState(currentNode):
+            return actions
+        if currentNode not in visited:
+            visited.add(currentNode)
+            for node, action, _ in problem.getSuccessors(currentNode):
+                new_path = actions.copy() 
+                new_path.append(action)
+                frontier.push((node, new_path))
     
-    states=util.Stack()
-    dir_taken=util.Stack()
+    return []
 
-    visited.add(problem.getStartState())
-    states.push(problem.getStartState())
-    curr_path=[]
-
-    while not states.isEmpty():
-        curr_state=states.pop()
-        visited.add(curr_state)
-        
-        if not dir_taken.isEmpty():
-            curr_patht=dir_taken.pop()
-
-        if(problem.isGoalState(curr_state)):
-           return curr_path
-
-        for succesor in problem.getSuccessors(curr_state):
-            if succesor[0] not in visited:
-                states.push(succesor[0])
-                new_path = curr_path[:]
-                new_path.append(succesor[1])  
-                dir_taken.push(new_path)  
-    return None
-
-    util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
