@@ -542,37 +542,6 @@ def isNextTo(position1, position2):
     # Check if the difference between x and y coordinates is within 1
     return abs(x1 - x2) + abs(y1 - y2) == 1
 
-def helper(position, foodList):
-    if not foodList:
-        return 0
-    initialPosition=position
-    count = 0
-    min=0
-    for i in range(len(foodList)):
-        item = foodList[i]
-        
-        count += util.manhattanDistance(item, position)
-        foodCpy=foodList[:]
-        for j in range(i,len(foodList)):
-            next_item=foodList[j]
-            if isNextTo(next_item,item):
-                if next_item in foodCpy:
-                    foodCpy.remove(next_item)
-                if position in foodCpy:
-                    foodCpy.remove(position)
-                count+= helper(next_item,foodCpy)
-    return count
-
-
-def manhattanMin(position, food): 
-    foodList = food.asList()
-    min_distance = float('inf')
-    for food in foodList:
-        distance = util.manhattanDistance(position, food)
-        if distance < min_distance:
-            min_distance = distance
-    return min_distance
-
 
 def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
